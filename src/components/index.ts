@@ -1,4 +1,5 @@
 export * from './Collection'
+export * from './CartPreview'
 export * from './Directory'
 export * from './Header'
 export * from './InputGroup'

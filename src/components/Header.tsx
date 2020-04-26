@@ -1,10 +1,13 @@
-import React, { FC, useState, useRef } from 'react'
+import React, { FC, useRef } from 'react'
 import { NavLink, Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import useOnClickOutside from 'use-onclickoutside'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingBag } from '@fortawesome/free-solid-svg-icons'
+
+import { CartPreview } from './CartPreview'
+import { toggleDropdown } from '../redux'
 
 interface Props {
   signOut: () => void
@@ -12,17 +15,23 @@ interface Props {
 
 export const Header: FC<Props> = ({ signOut }) => {
   const user = useSelector(state => state.user.currentUser)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const cartDropdownHidden = useSelector(state => state.cart.hidden)
+  const dispatch = useDispatch()
+
   const dropdownRef = useRef(null)
 
-  const showDropdown = () => setIsCollapsed(!isCollapsed)
-  useOnClickOutside(dropdownRef, () => {
-    setIsCollapsed(false)
+  const showDropdown = () => {
+    dispatch(toggleDropdown())
+  }
+  useOnClickOutside(dropdownRef, (e: MouseEvent) => {
+    if (e?.target?.className?.includes && !e.target.className.includes('dropdown-toggle')) {
+      dispatch(toggleDropdown())
+    }
   })
 
   return (
     <header className="mb-5">
-      <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-sm">
         <Link className="navbar-brand" to="/">
           <span className="text-primary">E</span> Shop
         </Link>
@@ -61,12 +70,12 @@ export const Header: FC<Props> = ({ signOut }) => {
                 <FontAwesomeIcon icon={faShoppingBag} />
               </DropdownToggle>
               <div
-                className={`dropdown-menu dropdown-menu-right ${isCollapsed &&
+                className={`dropdown-menu dropdown-menu-right ${!cartDropdownHidden &&
                   'show'}`}
                 aria-labelledby="navbarDropdown"
                 ref={dropdownRef}
               >
-                <span className="dropdown-item">Design</span>
+                <CartPreview />
               </div>
             </li>
           </ul>
