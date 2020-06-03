@@ -16,6 +16,8 @@ interface Props {
 export const Header: FC<Props> = ({ signOut }) => {
   const user = useSelector(state => state.user.currentUser)
   const cartDropdownHidden = useSelector(state => state.cart.hidden)
+  const cartProducts = useSelector(state => state.cart.cartProducts)
+  console.log(cartProducts)
   const dispatch = useDispatch()
 
   const dropdownRef = useRef(null)
@@ -24,7 +26,7 @@ export const Header: FC<Props> = ({ signOut }) => {
     dispatch(toggleDropdown())
   }
   useOnClickOutside(dropdownRef, (e: MouseEvent) => {
-    if (e?.target?.className?.includes && !e.target.className.includes('dropdown-toggle')) {
+    if (e?.target?.className?.includes && !e.target.className.includes('dropdown-toggle') && !cartDropdownHidden) {
       dispatch(toggleDropdown())
     }
   })
