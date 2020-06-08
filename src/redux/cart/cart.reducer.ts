@@ -7,7 +7,8 @@ const INITIAL_STATE = {
       id: 1,
       name: 'Brown Brim',
       imageUrl: 'https://i.ibb.co/ZYW3VTp/brown-brim.png',
-      price: 25
+      price: 25,
+      quantity: 1
     }
   ]
 }
@@ -20,9 +21,24 @@ export const cartReducer = (state = INITIAL_STATE, action) => {
         hidden: !state.hidden
       }
     case CART_ACTION_TYPES.ADD_PRODUCT:
+      const productInCartIndex = state.cartProducts.findIndex(
+        item => item.id === action.payload.id
+      )
+      let updatedCartProducts = state.cartProducts
+
+      if (productInCartIndex < 0) {
+        const product = {
+          quantity: 1,
+          ...action.payload
+        }
+        updatedCartProducts = [...updatedCartProducts, ...[product]]
+      } else {
+        console.log(productInCartIndex)
+        updatedCartProducts[productInCartIndex].quantity++
+      }
       return {
         ...state,
-        cartProducts: [...state.cartProducts, ...[action.payload]]
+        cartProducts: updatedCartProducts
       }
     default:
       return state

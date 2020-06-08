@@ -6,10 +6,12 @@ interface Props {
   product: Product
 }
 
-export const CartPreviewItem: FC<Props> = ({ product: { name, price } }) => {
+export const CartPreviewItem: FC<Props> = ({
+  product: { name, price, quantity }
+}) => {
   return (
     <li className="list-group-item d-flex">
-      {name} - {price}
+      {name} - {price} X {quantity}
     </li>
   )
 }
